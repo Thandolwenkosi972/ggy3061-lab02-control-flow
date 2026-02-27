@@ -5,11 +5,12 @@ GGY3061 - Geoscience Data Analysis
 Implement a drilling cost calculator function with parameters and conditional logic.
 """
 
-# Your Name: [YOUR NAME]
-# Student ID: [YOUR ID]
+# Your Name: Thandolwenkosi sakala
+# Student ID: 2023073987
 
 
 def calculate_drilling_cost(depth, base_rate=50, hardness='medium'):
+
     """
     Calculate the total drilling cost based on depth and conditions.
 
@@ -48,7 +49,27 @@ def calculate_drilling_cost(depth, base_rate=50, hardness='medium'):
     # TODO: Calculate cost for each depth tier
     # TODO: Apply hardness adjustment
     # TODO: Return total cost
-    pass
+    if depth <= 0 or base_rate <= 0 or hardness not in ['soft','medium','hard']:
+        return -1
+    
+    tier1_meters = min(depth, 200)
+    tier2_meters = min(max(depth - 200,0), 300)
+    tier3_meters = max(depth - 500, 0)
+
+    tier1_cost = tier1_meters * base_rate
+    tier2_cost = tier2_meters * base_rate * 1.25
+    tier3_cost = tier3_meters * base_rate * 1.5
+
+    subtotal = tier1_cost + tier2_cost + tier3_cost
+
+    if hardness == 'soft':
+        total_cost = subtotal * 0.9
+    elif hardness == 'medium':
+        total_cost = subtotal * 1.0
+    else:
+        total_cost = subtotal * 1.2
+
+    return total_cost
 
 
 def calculate_cost_breakdown(depth, base_rate=50):
@@ -72,7 +93,28 @@ def calculate_cost_breakdown(depth, base_rate=50):
     Returns None if depth <= 0.
     """
     # TODO: Calculate meters and cost in each tier
-    pass
+    if depth <= 0:
+        return None
+    
+    tier1_meters = min(depth,200)
+    tier2_meters = min(max(depth - 200,0),300)
+    tier3_meters = max(depth - 500, 0)
+
+    tier1_cost = tier1_meters * base_rate
+    tier2_cost = tier2_meters * base_rate * 1.25
+    tier3_cost = tier3_meters * base_rate * 1.5
+
+    subtotal = tier1_cost + tier2_cost + tier3_cost
+
+    return {
+        'tier1_meters': tier1_meters,
+        'tier1_cost': tier1_cost,
+        'tier2_meters':tier2_meters,
+        'tier2_cost': tier2_cost,
+        'tier3_meters':tier3_cost,
+        'tier3_cost': tier3_cost,
+        
+    }
 
 
 def format_cost_report(depth, cost, hardness, base_rate):
@@ -100,17 +142,31 @@ def format_cost_report(depth, cost, hardness, base_rate):
         ================================
     """
     # TODO: Create a formatted string report
-    pass
+    report = f"""
+==================================
+Drilling cost estimate
+==================================
+Depth: {depth} meters
+Base Rate: ${base_rate}/meter
+Rock Hardness: {hardness}
+
+----------------------------------
+Estimated Cost: 4{cost:,.2f}
+=====================================
+
+
+    """
+    return report.strip()
 
 
 if __name__ == "__main__":
     print("=== Drilling Cost Calculator ===\n")
 
     # Replace with YOUR base_rate from README.md
-    base_rate = 50
+    base_rate = 70
 
     # Replace with YOUR drilling_depths from README.md
-    test_depths = [150, 350, 600, 800]
+    test_depths = [717, 603, 759, 367]
     hardness_options = ['soft', 'medium', 'hard']
 
     print(f"Base Rate: ${base_rate}/meter\n")
@@ -119,9 +175,7 @@ if __name__ == "__main__":
         print(f"Depth: {depth}m")
         for hardness in hardness_options:
             cost = calculate_drilling_cost(depth, base_rate, hardness)
-            if cost is None:
-                print(f"  {hardness:8s}: Not yet implemented")
-            elif cost >= 0:
+            if cost >= 0:
                 print(f"  {hardness:8s}: ${cost:,.2f}")
             else:
                 print(f"  {hardness:8s}: Invalid input")
