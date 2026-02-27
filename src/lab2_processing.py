@@ -5,8 +5,8 @@ GGY3061 - Geoscience Data Analysis
 Implement functions that process sample data using for loops.
 """
 
-# Your Name: [YOUR NAME]
-# Student ID: [YOUR ID]
+# Your Name: thandolwenkosi sakala
+# Student ID: 2023073987
 
 
 def process_samples(samples):
@@ -32,9 +32,35 @@ def process_samples(samples):
     # TODO: Track count, sum, min, and max of valid samples
     # TODO: Calculate average (handle case of no valid samples)
     # TODO: Return dictionary with all statistics
-    pass
+    count = 0
+    total = 0
+    max_grade = None
+    min_grade = None
 
+    for grade in samples:
+        if grade < 0:
+            continue #skip invalid values
 
+        count += 1
+        total += grade
+
+        if max_grade is None or grade > max_grade:
+            max_grade = grade
+
+        if  min_grade is None or grade < min_grade:
+            min_grade = grade
+
+    if count > 0:
+        average = total / count
+    else:
+        average = 0
+    return{
+        "count": count,
+        "total": total,
+        "average":average,
+        "max_grade": max_grade,
+        "min_grade": min_grade
+    }
 def count_by_category(samples, thresholds):
     """
     Count samples in each category based on thresholds.
@@ -57,7 +83,27 @@ def count_by_category(samples, thresholds):
     # TODO: Initialize count dictionary
     # TODO: Use for loop to iterate and classify each sample
     # TODO: Return the counts
-    pass
+    counts = {
+        "high":0,
+        "medium":0,
+        "low":0,
+        "subeconomic":0,
+        "invalid":0
+    }
+
+    for grade in samples:
+        if grade < 0:
+            counts["invalid"] += 1
+        elif grade >= thresholds["high"]:
+            counts['high']+=1
+        elif grade >= thresholds["medium"]:
+            counts["medium"]+=1
+        elif grade >= thresholds["low"]:
+            counts["low"] += 1
+        else:
+            counts["subeconomic"] += 1
+
+    return counts
 
 
 def filter_samples(samples, min_grade=0, max_grade=None):
@@ -73,12 +119,24 @@ def filter_samples(samples, min_grade=0, max_grade=None):
         list: Filtered list of samples within the range
     """
     # TODO: Use for loop with conditionals to filter samples
-    pass
+    filtered = []
+    for grade in samples:
+        if grade < min_grade:
+            continue
+
+        if max_grade is not None and grade > max_grade:
+            continue
+
+        filtered.append(grade)
+    return filtered
+"""
+rade_thresholds = {'high': 3.0, 'medium': 2.0, 'low': 1.0}
+  test_samples = [1.3, 3.9, 0.3, 0.7, 4.0, 2.5, 3.8, 2.8]"""
 
 
 if __name__ == "__main__":
     # Replace with YOUR test_samples from README.md
-    samples = [3.5, 2.1, 1.5, 0.8, -0.5, 4.2, 0.0, 1.9]
+    samples = [1.3,3.9,0.3,0.7,4.0,2.5,3.8,2.8]
 
     # Replace with YOUR thresholds from README.md
     thresholds = {'high': 3.0, 'medium': 2.0, 'low': 1.0}
@@ -103,3 +161,4 @@ if __name__ == "__main__":
     print("\nFiltered Samples (grade >= 1.0):")
     filtered = filter_samples(samples, min_grade=1.0)
     print(f"  {filtered}")
+
