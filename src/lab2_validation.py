@@ -5,8 +5,8 @@ GGY3061 - Geoscience Data Analysis
 Implement input validation functions using while loops.
 """
 
-# Your Name: [YOUR NAME]
-# Student ID: [YOUR ID]
+# Your Name: [Thandolwenkosi sakala]
+# Student ID: [2023073987]
 
 
 def get_valid_grade():
@@ -32,7 +32,15 @@ def get_valid_grade():
     # TODO: Check if value is in valid range
     # TODO: Break loop and return when valid
     # TODO: Handle ValueError for non-numeric input
-    pass
+    while True:
+        try:
+            value = float(input("Enter grade (0 - 100): "))
+            if 0 <= value <= 100:
+                return value
+            else:
+                print("Invalid! Grade must be between 0 and 100")
+        except ValueError:
+            print("Invalid! please enter a numeric value.")
 
 
 def get_valid_depth():
@@ -57,7 +65,16 @@ def get_valid_depth():
     # TODO: Convert input to int
     # TODO: Check if value is positive
     # TODO: Handle ValueError for non-integer input
-    pass
+    while True:
+        try:
+            value = int(input("Enter depth (positive integer): "))
+            if value >0:
+                return value
+            else:
+                print("Invalid! Depth must be positive.")
+
+        except ValueError:
+            print("Invalid! Please enter a positive integer")
 
 
 def get_valid_choice(options):
@@ -79,8 +96,16 @@ def get_valid_choice(options):
     """
     # TODO: Use while loop to prompt until valid choice
     # TODO: Convert input to lowercase for comparison
-    pass
+    options_lower = [option.lower() for option in options]
 
+    while True:
+        choice = input(f"Enter choice ({'/'.join(options)}): ").lower() 
+        if choice in options_lower:
+            return choice
+        else:
+            print(f"Invalid! Choose from: {', '.join(options)}")
+
+    
 
 def collect_samples(num_samples):
     """
@@ -96,7 +121,13 @@ def collect_samples(num_samples):
     """
     # TODO: Use for loop to collect num_samples values
     # TODO: Call get_valid_grade() for each sample
-    pass
+    samples = []
+    for i in range(num_samples):
+        print(f"\nSample {i + 1}:")
+        grade = get_valid_grade()
+        samples.append(grade)
+
+    return samples
 
 
 if __name__ == "__main__":
@@ -120,3 +151,4 @@ if __name__ == "__main__":
     print("--- Collecting 3 Samples ---")
     samples = collect_samples(3)
     print(f"Collected samples: {samples}")
+
