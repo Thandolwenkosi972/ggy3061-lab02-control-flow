@@ -5,8 +5,8 @@ GGY3061 - Geoscience Data Analysis
 Combine control structures and functions to generate comprehensive reports.
 """
 
-# Your Name: [YOUR NAME]
-# Student ID: [YOUR ID]
+# Your Name: [YOUR NAME]Thandolwenkosi sakala
+# Student ID: [2023073987]
 
 # Import functions from other modules
 # Note: These imports will work when the other files are completed
@@ -72,7 +72,50 @@ def generate_report(samples, thresholds):
     # TODO: Use count_by_category for breakdown
     # TODO: Build formatted string report
     # TODO: Include list of high-grade samples using for loop
-    pass
+    stats = process_samples(samples)
+    counts = count_by_category(samples, thresholds)
+
+    if not stats:
+        return None
+    
+    total_samples = len(samples)
+    valid_samples = stats["count"]
+
+    def percentage(count):
+        return (count / valid_samples * 100) if valid_samples > 0 else 0
+    report = []
+    report.append("=" * 48)
+    report.append("GRADE STATISTICS REPORT")
+    report.append("=" * 48)
+    report.append("")
+    report.append("SUMMARY STATISTICS")
+    report.append("-" * 18)
+    report.append(f"Total Samples: {total_samples}")
+    report.append(f"Valid Samples: {valid_samples}")
+    report.append(f"Average Grade: {stats['average']:.2f}")
+    report.append(f"Minimum Grade: {stats['min_grade']}")
+    report.append(f"Maximum Grade: {stats['max_grade']}")
+    report.append("")
+    report.append("CATEGORY BREAKDOWN")
+    report.append("-" * 18)
+
+    report.append(f"High Grade:    {counts['high']} ({percentage(counts['high']):.1f}%)")
+    report.append(f"Medium Grade:  {counts['medium']} ({percentage(counts['medium']):.1f}%)")
+    report.append(f"Low Grade:     {counts['low']} ({percentage(counts['low']):.1f}%)")
+    report.append(f"Sub-economic:  {counts['subeconomic']} ({percentage(counts['subeconomic']):.1f}%)")
+    report.append(f"Invalid:       {counts['invalid']}")
+    report.append("")
+    report.append("HIGH-GRADE SAMPLES")
+    report.append("-" * 18)
+
+    for grade in samples:
+        if grade >= thresholds['high']:
+            report.append(f"- Grade {grade:.2f}")
+
+    report.append("")
+    report.append("=" * 48)
+
+    return "\n".join(report)
 
 
 def find_anomalies(samples, threshold_multiplier=2.0):
@@ -100,8 +143,26 @@ def find_anomalies(samples, threshold_multiplier=2.0):
     # TODO: Calculate anomaly threshold
     # TODO: Find and return samples exceeding threshold
     # TODO: Sort in descending order
-    pass
+    valid_samples = []
 
+    for grade in samples:
+        if grade >= 0:
+            valid_samples.append(grade)
+
+    if not valid_samples:
+        return []
+
+    average = sum(valid_samples) / len(valid_samples)
+    threshold = average * threshold_multiplier
+
+    anomalies = []
+
+    for grade in valid_samples:
+        if grade > threshold:
+            anomalies.append(grade)
+
+    anomalies.sort(reverse=True)
+    return anomalies
 
 def get_grade_distribution(samples, num_bins=5, grade_range=(0, 5)):
     """
@@ -121,7 +182,33 @@ def get_grade_distribution(samples, num_bins=5, grade_range=(0, 5)):
     """
     # TODO: Calculate bin width
     # TODO: Create bins and count samples in each
-    pass
+    min_range, max_range = grade_range
+    bin_width = (max_range - min_range) / num_bins
+
+    distribution = {}
+
+    for i in range(num_bins):
+        start = min_range + i * bin_width
+        end = start + bin_width
+        label = f"{start:.1f}-{end:.1f}"
+        distribution[label] = 0
+
+
+    for grade in samples:
+        if grade < min_range or grade >= max_range:
+            continue
+
+        bin_index = int((grade - min_range) / bin_width)
+        if bin_index == num_bins:
+            bin_index -= 1
+
+        start = min_range + bin_index * bin_width
+        end = start + bin_width
+        label = f"{start:.1f}-{end:.1f}"
+
+        distribution[label] += 1
+
+    return distribution
 
 
 def print_histogram(distribution, max_width=40):
@@ -142,12 +229,23 @@ def print_histogram(distribution, max_width=40):
     """
     # TODO: Find maximum count for scaling
     # TODO: Print each bin with scaled bar
-    pass
+    print("Grade Distribution:")
 
+    max_count = max(distribution.values()) if distribution else 0
+
+    for label, count in distribution.items():
+        if max_count > 0:
+            bar_length = int((count / max_count) * max_width)
+        else:
+            bar_length = 0
+
+        bar = "#" * bar_length
+        print(f"{label} | {bar} ({count})")
 
 if __name__ == "__main__":
     # Replace with YOUR test_samples from README.md
-    samples = [3.5, 2.1, 1.5, 0.8, -0.5, 4.2, 0.0, 1.9, 2.8, 0.5]
+    samples = [1.3,3.9,0.3,0.7,4.0,2.5,3.8,2.8]
+
 
     # Replace with YOUR thresholds from README.md
     thresholds = {'high': 3.0, 'medium': 2.0, 'low': 1.0}
@@ -179,3 +277,5 @@ if __name__ == "__main__":
         print_histogram(distribution)
     else:
         print("Distribution not yet implemented")
+
+
